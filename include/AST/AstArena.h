@@ -13,7 +13,18 @@ namespace AST {
     private:
         std::vector<std::unique_ptr<Node>> exprs;
 
+        static AstArena& instance;
+
+        AstArena() = default;
+
     public:
+        AstArena(const AstArena& arena) = delete;
+
+        static AstArena& GetArena() {
+            static AstArena instance;
+            return instance;
+        }
+
         template<class T, class... Args>
         T* make(Args&&... args) {
             static_assert(std::is_base_of_v<Node, T>,

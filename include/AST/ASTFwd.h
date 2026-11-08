@@ -9,12 +9,7 @@ namespace AST {
     struct CallExpr;
 
     namespace Literals {
-        struct IntLiteral;
-        struct StringLiteral;
-        struct BoolLiteral;
-        
+        struct LiteralExpr;
         struct LiteralFraction;
     }
-
-    class ExprVisitor;
 }

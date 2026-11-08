@@ -1,65 +1,61 @@
-#include <memory>
+#include "AST/Exprs.h"
+#include "AST/Literals.h"
+#include "Parsing/Errors.h"
+#include "Parsing/Lexer.h"
+#include "Parsing/Parser.h"
+#include "Parsing/Token.h"
 
-#include "AST.h"
-#include "Literal.h"
-#include "Operators.h"
+#include <cstdio>
+#include <iostream>
+#include <string>
+#include <variant>
+#include <vector>
 
-using namespace AST;
-using namespace Literals;
+void printTokens(const std::vector<Token> &tokens) {
+	for (auto token : tokens) {
+		int64_t num = 0;
+		int64_t den = 0;
 
-struct LiteralNumber : public Literal {
-    int i = 0;
+		if (auto *fraction = std::get_if<AST::Literals::LiteralFraction>(&token.literal)) {
+			num = fraction->numerator;
+			den = fraction->denominator;
+		}
 
-    LiteralNumber() = default;
-    LiteralNumber(int i) { this->i = i; }
+		printf("Type: %d (%lld/%lld)\n", token.type, num, den);
+	}
+}
 
-    std::unique_ptr<Literal> Copy() override {
-        auto num = std::make_unique<LiteralNumber>();
-        num->i = i;
-        return num;
-    }
-};
-
-class EvaluationVisitor : public ExprVisitor {
+class ASTPrinterVisitor : ExprVisitors::ExprVisitor {
 public:
-    void Visit(BinaryExpr& expr) override
-    {
-        std::cout << "BinaryExpr\n";
+	std::string Visit(AST::BinaryExpr &expr) {
 
-        expr.left->accept(*this);
-        expr.right->accept(*this);
     }
+	virtual void Visit(AST::UnaryExpr &expr) = 0;
+	virtual void Visit(AST::CallExpr &expr) = 0;
 
-    void Visit(UnaryExpr& expr) override
-    {
-        std::cout << "UnaryExpr\n";
-
-        expr.expr->accept(*this);
-    }
-
-    void Visit(CallExpr& expr) override
-    {
-        std::cout << "CallExpr\n";
-
-        expr.argument->accept(*this);
-    }
-
-    void Visit(LiteralExpr& expr) override
-    {
-        std::cout << "LiteralExpr\n";
-    }
+	virtual void Visit(AST::Literals::LiteralExpr &expr) = 0;
 };
 
-void Evaluate(Expr& expr) {
-    expr.Accept(*(new EvaluationVisitor()));
+void process_input(const std::string &input) {
+	Parsing::Lexer lexer{input};
+	auto tokens = lexer.Parse();
+
+	printTokens(tokens);
+
+	Parsing::Parser parser{input, tokens};
+	auto expr = parser.Parse();
 }
 
 int main() {
-    auto expr = BinaryExpr(
-        LiteralExpr(LiteralNumber(1)),
-        BinOp::PLUS,
-        LiteralExpr(LiteralNumber(2))
-    );
+	std::string input;
+	std::cout << "> ";
+	std::cin >> input;
 
-    return 0;
+	try {
+		process_input(input);
+	}
+	catch (Parsing::Errors::ParserException) {
+	}
+
+	return 0;
 }

@@ -5,21 +5,21 @@
 #include <vector>
 #include <type_traits>
 
-#include "ExprVisitor.h"
+#include "ExprVisitors/ExprVisitor.h"
 #include "Node.h"
 #include "Operators.h"
 
 namespace AST {
     struct Expr : public Node {
-        virtual void Accept(ExprVisitor& visitor) = 0;
+        virtual void Accept(Visitors::IExprVisitor& visitor) = 0;
     };
 
     template<typename Derived>
     struct ExprCRTP : public Expr {
-        void Accept(ExprVisitor& visitor) override {
+        void Accept(Visitors::IExprVisitor& visitor) override {
             static_assert(std::is_base_of_v<ExprCRTP<Derived>, Derived>,
                         "Derived must inherit from ExprCRTP<Derived>");
-            visitor.Visit(static_cast<Derived&>(*this));
+            return visitor.Visit(static_cast<Derived*>(this));
         }
     };
 
@@ -38,7 +38,7 @@ namespace AST {
         Expr* expr = nullptr;
 
         UnaryExpr() = default;
-        UnaryExpr(Expr* e, Operators::UnaryOp o) : expr(e), op(o) {}
+        UnaryExpr(Expr* e, Operators::UnaryOp o) : op(o), expr(e) {}
     };
 
     struct CallExpr final : public ExprCRTP<CallExpr> {
