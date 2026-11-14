@@ -22,3 +22,4 @@ IncludeBlocks: Regroup
 ColumnLimit: 0
 FixNamespaceComments: false
 AccessModifierOffset: -4
+NamespaceIndentation: All

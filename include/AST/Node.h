@@ -1,7 +1,7 @@
 #pragma once
 
 namespace AST {
-    struct Node {
-        virtual ~Node() = default;
-    };
+	struct Node {
+		virtual ~Node() = default;
+	};
 }

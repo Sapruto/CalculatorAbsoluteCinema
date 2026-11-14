@@ -5,101 +5,100 @@
 using namespace Parsing;
 using namespace AST::Literals;
 
-Lexer::Lexer(const std::string &_code) : code(_code), errorsLogger(_code) {}
+Lexer::Lexer(const std::string &_code) : code(_code), errorsLogger(_code) {
+}
 
 bool Lexer::IsAlpha(char c) { return (c >= '0' && c <= '9') || c == '.'; }
 
 void Lexer::ParseNumber() {
-    bool periodParsed = false;
+	bool periodParsed = false;
 
-    int64_t numerator = 0;
-    int64_t denominator = 1;
+	int64_t numerator = 0;
+	int64_t denominator = 1;
 
-    char c;
-    while (IsAlpha(c = code[current])) {
-        if (c == '.') {
-            if (periodParsed) {
-                throw errorsLogger.Report({code, current, current}, "Second period in one number");
-            }
-            else {
-                current++;
-                periodParsed = true;
-                continue;
-            }
-        }
+	char c;
+	while (IsAlpha(c = code[current])) {
+		if (c == '.') {
+			if (periodParsed) {
+				throw errorsLogger.Report({code, current, current}, "Second period in one number");
+			}
 
-        numerator *= 10;
-        numerator += c - '0';
+			current++;
+			periodParsed = true;
+			continue;
+		}
 
-        if (periodParsed) {
-            denominator *= 10;
-        }
+		numerator *= 10;
+		numerator += c - '0';
 
-        current++;
-    }
+		if (periodParsed) {
+			denominator *= 10;
+		}
 
-    AddToken(TokenType::LITERAL, LiteralFraction{numerator, denominator});
+		current++;
+	}
+
+	AddToken(TokenType::LITERAL, LiteralFraction{numerator, denominator});
 }
 
 void Lexer::AddToken(TokenType type) {
-    auto lexeme = code.substr(start, current - start);
-    auto loc = TokenLoc{code, start, current};
-    tokens.push_back(Token{type, loc});
+	auto lexeme = code.substr(start, current - start);
+	auto loc = TokenLoc{code, start, current};
+	tokens.push_back(Token{type, loc});
 }
 
 void Lexer::AddToken(TokenType type, LiteralFraction literal) {
-    auto lexeme = code.substr(start, current - start);
-    auto loc = TokenLoc{code, start, current};
-    tokens.push_back(Token{type, loc, literal});
+	auto lexeme = code.substr(start, current - start);
+	auto loc = TokenLoc{code, start, current};
+	tokens.push_back(Token{type, loc, literal});
 }
 
 std::vector<Token> Lexer::Parse() {
-    while (true) {
-        start = current;
+	while (true) {
+		start = current;
 
-        char c = code[current];
+		char c = code[current];
 
-        if (c == '\0') {
-            AddToken(TokenType::END_OF_FILE);
-            break;
-        }
+		if (c == '\0') {
+			AddToken(TokenType::END_OF_FILE);
+			break;
+		}
 
-        switch (c) {
-        case ' ':
-        case '\n':
-        case '\t':
-            current++;
-            break;
-        case '+':
-            AddToken(TokenType::PLUS);
-            break;
-        case '-':
-            AddToken(TokenType::MINUS);
-            break;
-        case '*':
-            AddToken(TokenType::STAR);
-            break;
-        case '/':
-            AddToken(TokenType::SLASH);
-            break;
-        case '(':
-            AddToken(TokenType::LEFT_BRACKET);
-            break;
-        case ')':
-            AddToken(TokenType::RIGHT_BRACKET);
-            break;
-        default:
-            if (IsAlpha(c)) {
-                ParseNumber();
-                continue;
-            }
-            else {
-                throw errorsLogger.Report({code, start, current}, "Unexpected character");
-            }
-        }
+		switch (c) {
+		case ' ':
+		case '\n':
+		case '\t':
+			current++;
+			break;
+		case '+':
+			AddToken(TokenType::PLUS);
+			break;
+		case '-':
+			AddToken(TokenType::MINUS);
+			break;
+		case '*':
+			AddToken(TokenType::STAR);
+			break;
+		case '/':
+			AddToken(TokenType::SLASH);
+			break;
+		case '(':
+			AddToken(TokenType::LEFT_BRACKET);
+			break;
+		case ')':
+			AddToken(TokenType::RIGHT_BRACKET);
+			break;
+		default: {
+			if (IsAlpha(c)) {
+				ParseNumber();
+				continue;
+			}
+			throw errorsLogger.Report({code, start, current}, "Unexpected character");
+		}
+		}
 
-        current++;
-    }
+		current++;
+	}
 
-    return tokens;
+	return tokens;
 }

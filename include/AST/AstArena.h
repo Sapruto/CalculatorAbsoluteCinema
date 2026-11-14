@@ -5,34 +5,33 @@
 #include <type_traits>
 #include <utility>
 
-#include "ASTFwd.h"
 #include "Node.h"
 
 namespace AST {
-    class AstArena {
-    private:
-        std::vector<std::unique_ptr<Node>> exprs;
+	class AstArena {
+	private:
+		std::vector<std::unique_ptr<Node>> exprs;
 
-        static AstArena& instance;
+		static AstArena &instance;
 
-        AstArena() = default;
+		AstArena() = default;
 
-    public:
-        AstArena(const AstArena& arena) = delete;
+	public:
+		AstArena(const AstArena &arena) = delete;
 
-        static AstArena& GetArena() {
-            static AstArena instance;
-            return instance;
-        }
+		static AstArena &GetArena() {
+			static AstArena instance;
+			return instance;
+		}
 
-        template<class T, class... Args>
-        T* make(Args&&... args) {
-            static_assert(std::is_base_of_v<Node, T>,
-                        "AstArena can only own Node subclasses");
-            auto p = std::make_unique<T>(std::forward<Args>(args)...);
-            T* raw = p.get();
-            exprs.push_back(std::move(p));
-            return raw;
-        }
-    };
+		template <class T, class... Args>
+		T *make(Args &&... args) {
+			static_assert(std::is_base_of_v<Node, T>,
+			              "AstArena can only own Node subclasses");
+			auto p = std::make_unique<T>(std::forward<Args>(args)...);
+			T *raw = p.get();
+			exprs.push_back(std::move(p));
+			return raw;
+		}
+	};
 }

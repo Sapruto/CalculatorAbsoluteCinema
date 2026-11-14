@@ -25,17 +25,6 @@ void printTokens(const std::vector<Token> &tokens) {
 	}
 }
 
-class ASTPrinterVisitor : ExprVisitors::ExprVisitor {
-public:
-	std::string Visit(AST::BinaryExpr &expr) {
-
-    }
-	virtual void Visit(AST::UnaryExpr &expr) = 0;
-	virtual void Visit(AST::CallExpr &expr) = 0;
-
-	virtual void Visit(AST::Literals::LiteralExpr &expr) = 0;
-};
-
 void process_input(const std::string &input) {
 	Parsing::Lexer lexer{input};
 	auto tokens = lexer.Parse();
