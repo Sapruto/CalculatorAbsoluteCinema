@@ -1,3 +1,4 @@
 CompileFlags:
   Add:
     - -I/home/alex/Projects/CalculatorAbsoluteCinema/include
+    - -std=c++20

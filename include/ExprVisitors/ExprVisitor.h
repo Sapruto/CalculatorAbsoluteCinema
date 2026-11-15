@@ -1,14 +1,23 @@
 #pragma once
 
-#include "AST/ASTFwd.h"
-#include <cstdint>
+#include "../AST/Exprs.h"
+#include "../AST/Literals.h"
 
-namespace Visitors {
-    class IExprVisitor {
-    public:
-        virtual void Visit(AST::BinaryExpr* expr) = 0;
-        virtual void Visit(AST::UnaryExpr* expr) = 0;
-        virtual void Visit(AST::CallExpr* expr) = 0;
-        virtual void Visit(AST::Literals::LiteralExpr* expr) = 0;
-    };
+#include <concepts>
+#include <utility>
+
+namespace AST {
+    template<class... Ts>
+    struct Overloaded : Ts... { using Ts::operator()...; };
+
+    template<std::derived_from<Expr> ExprT, std::invocable<ExprT*> Func>
+    decltype(auto) Visit(ExprT* e, Func&& func) {
+        return std::forward<Func>(func)(e);
+    }
+
+    template<typename ExprT, typename Func>
+    requires (std::derived_from<std::remove_cvref_t<ExprT>, Expr> && std::invocable<Func, ExprT&&>)
+    decltype(auto) Visit(ExprT&& e, Func&& func) {
+        return std::forward<Func>(func)(std::forward<ExprT>(e));
+    }
 }

@@ -10,7 +10,7 @@ namespace AST::Literals {
 		virtual ~LiteralValue() = default;
 	};
 
-	struct LiteralExpr final : public ExprCRTP<LiteralExpr> {
+	struct LiteralExpr final : public Expr {
 		LiteralValue *literal;
 
 		LiteralExpr() = default;
