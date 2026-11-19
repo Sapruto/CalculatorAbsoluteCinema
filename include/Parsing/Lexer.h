@@ -18,7 +18,7 @@ namespace Parsing {
 		static bool IsAlpha(char c);
 		void ParseNumber();
 		void AddToken(TokenType type);
-		void AddToken(TokenType type, AST::Literals::LiteralFraction literal);
+		void AddToken(TokenType type, AST::Literals::Fraction literal);
 
 	public:
 		Lexer(const std::string &_code);

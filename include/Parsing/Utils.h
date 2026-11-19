@@ -52,7 +52,7 @@ namespace Parsing::Utils {
 			int64_t num = 0;
 			int64_t den = 0;
 
-			if (auto *fraction = std::get_if<AST::Literals::LiteralFraction>(&token.literal)) {
+			if (auto *fraction = std::get_if<AST::Literals::Fraction>(&token.literal)) {
 				num = fraction->numerator;
 				den = fraction->denominator;
 			}

@@ -24,7 +24,7 @@ namespace AST {
 		case ExprKind::CALL:
 			return std::forward<Func>(func)(static_cast<CallExpr *>(e));
 		case ExprKind::LITERAL:
-			return std::forward<Func>(func)(static_cast<Literals::LiteralExpr *>(e));
+			return std::forward<Func>(func)(static_cast<LiteralExpr *>(e));
 		}
 		throw std::logic_error("Visit: unknown ExprKind");
 	}

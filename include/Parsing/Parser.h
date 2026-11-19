@@ -67,7 +67,7 @@ namespace Parsing {
 			}
 
 			auto literalToken = Consume(TokenType::LITERAL);
-			return arena.make<AST::Literals::LiteralExpr>(&std::get<AST::Literals::LiteralFraction>(literalToken->literal));
+			return arena.make<AST::LiteralExpr>(&std::get<AST::Literals::Fraction>(literalToken->literal));
 		}
 
 		AST::Expr *Term() {

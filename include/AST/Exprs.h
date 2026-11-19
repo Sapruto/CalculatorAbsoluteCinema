@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ASTFwd.h"
 #include "Node.h"
 #include "Operators.h"
 
@@ -43,5 +44,14 @@ namespace AST {
 
 		explicit CallExpr(std::string n)
 			: Expr(ExprKind::CALL), name(std::move(n)) {}
+	};
+
+	struct LiteralExpr final : public Expr {
+		Literals::LiteralValue *literal;
+
+		LiteralExpr(Literals::LiteralValue *l)
+			: Expr(ExprKind::LITERAL),
+			  literal(l) {
+		}
 	};
 }

@@ -18,7 +18,7 @@ struct TokenLoc {
 	}
 };
 
-using LiteralType = std::variant<AST::Literals::LiteralFraction, std::monostate>;
+using LiteralType = std::variant<AST::Literals::Fraction, std::monostate>;
 
 struct Token {
 	TokenType type;

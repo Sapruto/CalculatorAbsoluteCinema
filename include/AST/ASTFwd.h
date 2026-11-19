@@ -7,9 +7,10 @@ namespace AST {
 	struct BinaryExpr;
 	struct UnaryExpr;
 	struct CallExpr;
+	struct LiteralExpr;
 
 	namespace Literals {
-		struct LiteralExpr;
-		struct LiteralFraction;
+		struct LiteralValue;
+		struct Fraction;
 	}
 }

@@ -38,7 +38,7 @@ void Lexer::ParseNumber() {
 		current++;
 	}
 
-	AddToken(TokenType::LITERAL, LiteralFraction{numerator, denominator});
+	AddToken(TokenType::LITERAL, Fraction{numerator, denominator});
 }
 
 void Lexer::AddToken(TokenType type) {
@@ -47,7 +47,7 @@ void Lexer::AddToken(TokenType type) {
 	tokens.push_back(Token{type, loc});
 }
 
-void Lexer::AddToken(TokenType type, LiteralFraction literal) {
+void Lexer::AddToken(TokenType type, Fraction literal) {
 	auto lexeme = code.substr(start, current - start);
 	auto loc = TokenLoc{code, start, current};
 	tokens.push_back(Token{type, loc, literal});

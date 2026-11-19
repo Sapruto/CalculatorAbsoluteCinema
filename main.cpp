@@ -5,6 +5,7 @@
 #include "include/Parsing/Lexer.h"
 
 #include <iostream>
+#include <print>
 #include <string>
 
 void ProcessInput(const std::string &input) {
@@ -14,7 +15,14 @@ void ProcessInput(const std::string &input) {
 	Parsing::Parser parser{input, tokens};
 	auto expr = parser.Parse();
 
-	std::cout << Print(expr) << std::endl;
+	auto result = Eval(expr);
+
+	if (result.denominator == 1) {
+		std::print("{}\n", result.numerator);
+	}
+	else {
+		std::print("{} / {}\n", result.numerator, result.denominator);
+	}
 }
 
 int main() {

@@ -5,28 +5,24 @@
 
 #include <numeric>
 #include <stdexcept>
+#include <type_traits>
+#include <typeindex>
+#include <typeinfo>
 
 namespace AST::Literals {
 	struct LiteralValue {
 		virtual ~LiteralValue() = default;
+
+		virtual std::type_index GetType() const = 0;
 	};
 
-	struct LiteralExpr final : public Expr {
-		LiteralValue *literal;
-
-		LiteralExpr(LiteralValue *l)
-			: Expr(ExprKind::LITERAL),
-			  literal(l) {
-		}
-	};
-
-	struct LiteralFraction final : LiteralValue {
+	struct Fraction final : public LiteralValue {
 		Types::LiteralInt numerator = 0;
 		Types::LiteralInt denominator = 1;
 
 		void Normalize() {
 			if (denominator == 0)
-				throw std::invalid_argument("LiteralFraction: zero denominator");
+				throw std::invalid_argument("Fraction: zero denominator");
 			if (denominator < 0) {
 				numerator = -numerator;
 				denominator = -denominator;
@@ -36,13 +32,13 @@ namespace AST::Literals {
 			denominator /= g;
 		}
 
-		LiteralFraction() = default;
-		LiteralFraction(Types::LiteralInt num, Types::LiteralInt den)
+		Fraction() = default;
+		Fraction(Types::LiteralInt num, Types::LiteralInt den)
 			: numerator(num), denominator(den) {
 			Normalize();
 		}
 
-		LiteralFraction &operator+=(const LiteralFraction &other) {
+		Fraction &operator+=(const Fraction &other) {
 			auto lcm = std::lcm(denominator, other.denominator);
 			numerator = numerator * (lcm / denominator) + other.numerator * (lcm / other.denominator);
 			denominator = lcm;
@@ -50,7 +46,7 @@ namespace AST::Literals {
 			return *this;
 		}
 
-		LiteralFraction &operator-=(const LiteralFraction &other) {
+		Fraction &operator-=(const Fraction &other) {
 			auto lcm = std::lcm(denominator, other.denominator);
 			numerator = numerator * (lcm / denominator) - other.numerator * (lcm / other.denominator);
 			denominator = lcm;
@@ -58,14 +54,14 @@ namespace AST::Literals {
 			return *this;
 		}
 
-		LiteralFraction &operator*=(const LiteralFraction &other) {
+		Fraction &operator*=(const Fraction &other) {
 			numerator *= other.numerator;
 			denominator *= other.denominator;
 			Normalize();
 			return *this;
 		}
 
-		LiteralFraction &operator/=(const LiteralFraction &other) {
+		Fraction &operator/=(const Fraction &other) {
 			if (other.numerator == 0) {
 				throw std::invalid_argument("Division by zero");
 			}
@@ -75,27 +71,42 @@ namespace AST::Literals {
 			return *this;
 		}
 
-		LiteralFraction operator+(const LiteralFraction &other) const {
+		Fraction operator+(const Fraction &other) const {
 			auto lcm = std::lcm(denominator, other.denominator);
 			auto newNumerator = numerator * (lcm / denominator) + other.numerator * (lcm / other.denominator);
-			return LiteralFraction(newNumerator, lcm);
+			return Fraction(newNumerator, lcm);
 		}
 
-		LiteralFraction operator-(const LiteralFraction &other) const {
+		Fraction operator-(const Fraction &other) const {
 			auto lcm = std::lcm(denominator, other.denominator);
 			auto newNumerator = numerator * (lcm / denominator) - other.numerator * (lcm / other.denominator);
-			return LiteralFraction(newNumerator, lcm);
+			return Fraction(newNumerator, lcm);
 		}
 
-		LiteralFraction operator*(const LiteralFraction &other) const {
-			return LiteralFraction(numerator * other.numerator, denominator * other.denominator);
+		Fraction operator*(const Fraction &other) const {
+			return Fraction(numerator * other.numerator, denominator * other.denominator);
 		}
 
-		LiteralFraction operator/(const LiteralFraction &other) const {
+		Fraction operator/(const Fraction &other) const {
 			if (other.numerator == 0) {
 				throw std::invalid_argument("Division by zero");
 			}
-			return LiteralFraction(numerator * other.denominator, denominator * other.numerator);
+			return Fraction(numerator * other.denominator, denominator * other.numerator);
 		}
+
+		Fraction operator-() const {
+			return Fraction(-numerator, denominator);
+		}
+
+		std::type_index GetType() const override { return typeid(Fraction); }
+	};
+
+	struct Identifier final : public LiteralValue {
+		std::string value;
+
+		Identifier() = default;
+		Identifier(const std::string& _value) : value(_value) {}
+
+		std::type_index GetType() const override { return typeid(Identifier); }
 	};
 }
