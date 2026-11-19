@@ -5,7 +5,8 @@ namespace Operators {
 		PLUS,
 		MINUS,
 		MULTIPLY,
-		DIVIDE
+		DIVIDE,
+		POWER
 	};
 
 	enum class UnaryOp {

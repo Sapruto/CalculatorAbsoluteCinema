@@ -3,6 +3,7 @@
 #include "Exprs.h"
 #include "Types.h"
 
+#include <cmath>
 #include <numeric>
 #include <stdexcept>
 #include <type_traits>
@@ -96,6 +97,10 @@ namespace AST::Literals {
 
 		Fraction operator-() const {
 			return Fraction(-numerator, denominator);
+		}
+
+		Fraction Pow(Types::LiteralInt v) {
+			return Fraction(std::pow(numerator, v), std::pow(denominator, v));
 		}
 
 		std::type_index GetType() const override { return typeid(Fraction); }

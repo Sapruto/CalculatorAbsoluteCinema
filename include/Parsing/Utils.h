@@ -5,6 +5,7 @@
 #include "Parsing/Token.h"
 #include "Parsing/TokenType.h"
 
+#include <print>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -20,6 +21,8 @@ namespace Parsing::Utils {
 			return "'*'";
 		case TokenType::SLASH:
 			return "'/'";
+		case TokenType::CARET:
+			return "'^'";
 		case TokenType::LEFT_BRACKET:
 			return "'('";
 		case TokenType::RIGHT_BRACKET:
@@ -43,6 +46,8 @@ namespace Parsing::Utils {
 			return "*";
 		case Operators::BinOp::DIVIDE:
 			return "/";
+		case Operators::BinOp::POWER:
+			return "^";
 		}
 		throw std::logic_error("Unexpected binop type");
 	}
@@ -57,7 +62,7 @@ namespace Parsing::Utils {
 				den = fraction->denominator;
 			}
 
-			printf("Type: %d (%lld/%lld)\n", token.type, num, den);
+			std::print("Type: {} ({}/{})\n", FormatType(token.type), num, den);
 		}
 	}
 }

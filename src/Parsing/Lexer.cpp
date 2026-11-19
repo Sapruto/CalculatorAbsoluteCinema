@@ -82,6 +82,9 @@ std::vector<Token> Lexer::Parse() {
 		case '/':
 			AddToken(TokenType::SLASH);
 			break;
+		case '^':
+			AddToken(TokenType::CARET);
+			break;
 		case '(':
 			AddToken(TokenType::LEFT_BRACKET);
 			break;

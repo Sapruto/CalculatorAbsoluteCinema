@@ -15,6 +15,8 @@ void ProcessInput(const std::string &input) {
 	Parsing::Parser parser{input, tokens};
 	auto expr = parser.Parse();
 
+	std::print("{}\n", Print(expr));
+
 	auto result = Eval(expr);
 
 	if (result.denominator == 1) {

@@ -34,8 +34,6 @@ namespace Parsing {
 		}
 
 		bool Check(TokenType type) {
-			if (IsAtEnd())
-				return false;
 			return Peek()->type == type;
 		}
 
@@ -70,15 +68,28 @@ namespace Parsing {
 			return arena.make<AST::LiteralExpr>(&std::get<AST::Literals::Fraction>(literalToken->literal));
 		}
 
+		AST::Expr *Power() {
+			auto *expr = Factor();
+
+			if (Match(TokenType::CARET)) {
+				return arena.make<AST::BinaryExpr>(
+					expr,
+					Operators::BinOp::POWER,
+					Power()
+				);
+			}
+			return expr;
+		}
+
 		AST::Expr *Term() {
-			AST::Expr *node = Factor();
+			AST::Expr *node = Power();
 
 			while (Match(TokenType::STAR) || Match(TokenType::SLASH)) {
 				auto *opToken = Previous();
 				Operators::BinOp op = opToken->type == TokenType::STAR
-					                      ? Operators::BinOp::MULTIPLY
-					                      : Operators::BinOp::DIVIDE;
-				node = arena.make<AST::BinaryExpr>(node, op, Factor());
+										  ? Operators::BinOp::MULTIPLY
+										  : Operators::BinOp::DIVIDE;
+				node = arena.make<AST::BinaryExpr>(node, op, Power());
 			}
 
 			return node;
@@ -90,8 +101,8 @@ namespace Parsing {
 			while (Match(TokenType::PLUS) || Match(TokenType::MINUS)) {
 				auto *opToken = Previous();
 				Operators::BinOp op = opToken->type == TokenType::PLUS
-					                      ? Operators::BinOp::PLUS
-					                      : Operators::BinOp::MINUS;
+										  ? Operators::BinOp::PLUS
+										  : Operators::BinOp::MINUS;
 				node = new AST::BinaryExpr(node, op, Term());
 			}
 
@@ -103,7 +114,11 @@ namespace Parsing {
 		}
 
 		AST::Expr *Parse() {
-			return Expr();
+			auto *expr = Expr();
+
+			Consume(TokenType::END_OF_FILE);
+
+			return expr;
 		}
 	};
 }

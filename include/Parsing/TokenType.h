@@ -5,6 +5,7 @@ enum class TokenType {
 	MINUS,
 	STAR,
 	SLASH,
+	CARET,
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
 	LITERAL,

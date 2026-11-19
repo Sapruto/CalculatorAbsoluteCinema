@@ -5,6 +5,7 @@
 #include "Parsing/Utils.h"
 #include "Visit.h"
 
+#include <cmath>
 #include <stdexcept>
 #include <string>
 
@@ -61,6 +62,12 @@ inline AST::Literals::Fraction Eval(AST::Expr *e) {
 								return left * right;
 							case Operators::BinOp::DIVIDE:
 								return left / right;
+							case Operators::BinOp::POWER:
+								auto f = left.Pow(right.numerator);
+								return Literals::Fraction(
+									std::pow(f.numerator, 1.0/right.denominator),
+									std::pow(f.denominator, 1.0/right.denominator),
+								);
 							}
 						},
 						[](UnaryExpr *u) -> AST::Literals::Fraction {
