@@ -1,37 +1,47 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <type_traits>
-
 #include "Node.h"
 #include "Operators.h"
 
+#include <string>
+#include <type_traits>
+#include <vector>
+
 namespace AST {
-	struct Expr : public Node {};
+	enum class ExprKind { BINARY,
+						  UNARY,
+						  CALL,
+						  LITERAL };
+
+	struct Expr : public Node {
+		const ExprKind kind;
+
+	protected:
+		explicit Expr(ExprKind k) : kind(k) {}
+	};
 
 	struct BinaryExpr final : public Expr {
-		Expr* left = nullptr;
+		Expr *left = nullptr;
 		Operators::BinOp op;
-		Expr* right = nullptr;
+		Expr *right = nullptr;
 
-		BinaryExpr(Expr* l, Operators::BinOp o, Expr* r)
-			: left(l), op(o), right(r) {}
+		BinaryExpr(Expr *l, Operators::BinOp o, Expr *r)
+			: Expr(ExprKind::BINARY), left(l), op(o), right(r) {}
 	};
 
 	struct UnaryExpr final : public Expr {
 		Operators::UnaryOp op;
-		Expr* expr = nullptr;
+		Expr *expr = nullptr;
 
-		UnaryExpr(Expr* e, Operators::UnaryOp o)
-			: op(o), expr(e) {}
+		UnaryExpr(Expr *e, Operators::UnaryOp o)
+			: Expr(ExprKind::UNARY), op(o), expr(e) {}
 	};
 
 	struct CallExpr final : public Expr {
 		std::string name;
-		std::vector<Expr*> args;
+		std::vector<Expr *> args;
 
 		explicit CallExpr(std::string n)
-			: name(std::move(n)) {}
+			: Expr(ExprKind::CALL), name(std::move(n)) {}
 	};
 }
