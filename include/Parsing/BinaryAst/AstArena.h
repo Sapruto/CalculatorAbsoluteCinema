@@ -7,7 +7,7 @@
 
 #include "Node.h"
 
-namespace AST {
+namespace Parsing::BinaryAst {
 	class AstArena {
 	private:
 		std::vector<std::unique_ptr<Node>> exprs;
@@ -27,7 +27,7 @@ namespace AST {
 		template <class T, class... Args>
 		T *make(Args &&... args) {
 			static_assert(std::is_base_of_v<Node, T>,
-			              "AstArena can only own Node subclasses");
+							"AstArena can only own Node subclasses");
 			auto p = std::make_unique<T>(std::forward<Args>(args)...);
 			T *raw = p.get();
 			exprs.push_back(std::move(p));

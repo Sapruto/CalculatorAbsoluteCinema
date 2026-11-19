@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace AST {
+namespace Parsing::BinaryAst {
 	template <class... Ts>
 	struct Overloaded : Ts... {
 		using Ts::operator()...;

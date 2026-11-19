@@ -1,7 +1,8 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
-#include "Parsing/Token.h"
+#include "Lexing/Token.h"
 
 namespace Parsing::Errors {
 	class ParserException : public std::runtime_error {
@@ -15,6 +16,6 @@ namespace Parsing::Errors {
 	public:
 		ErrorsLogger(const std::string &_source);
 
-		ParserException Report(TokenLoc loc, const std::string &message);
+		ParserException Report(Lexing::TokenLoc loc, const std::string &message);
 	};
 }

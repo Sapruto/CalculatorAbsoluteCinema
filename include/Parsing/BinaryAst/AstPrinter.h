@@ -1,15 +1,15 @@
 #pragma once
 
-#include "AST/Literals.h"
-#include "AST/Operators.h"
-#include "Parsing/Utils.h"
+#include "../Utils.h"
+#include "Literals.h"
+#include "Operators.h"
 #include "Visit.h"
 
 #include <stdexcept>
 #include <string>
 
-inline std::string Print(AST::Expr *e) {
-	using namespace AST;
+inline std::string Print(Parsing::BinaryAst::Expr *e) {
+	using namespace Parsing::BinaryAst;
 
 	return Visit(e, Overloaded{
 						[](BinaryExpr *b) -> std::string {
@@ -45,11 +45,11 @@ inline std::string Print(AST::Expr *e) {
 					});
 }
 
-inline AST::Literals::Fraction Eval(AST::Expr *e) {
-	using namespace AST;
+inline Parsing::BinaryAst::Literals::Fraction Eval(Parsing::BinaryAst::Expr *e) {
+	using namespace Parsing::BinaryAst;
 
 	return Visit(e, Overloaded{
-						[](BinaryExpr *b) -> AST::Literals::Fraction {
+						[](BinaryExpr *b) -> Parsing::BinaryAst::Literals::Fraction {
 							auto left = Eval(b->left);
 							auto right = Eval(b->right);
 							switch (b->op) {
@@ -63,16 +63,16 @@ inline AST::Literals::Fraction Eval(AST::Expr *e) {
 								return left / right;
 							}
 						},
-						[](UnaryExpr *u) -> AST::Literals::Fraction {
+						[](UnaryExpr *u) -> Parsing::BinaryAst::Literals::Fraction {
 							auto v = Eval(u->expr);
 							if (u->op == Operators::UnaryOp::NEGATION)
 								return -v;
 							return v;
 						},
-						[](CallExpr *c) -> AST::Literals::Fraction {
+						[](CallExpr *c) -> Parsing::BinaryAst::Literals::Fraction {
 							throw std::runtime_error("Not implemented");
 						},
-						[](LiteralExpr *l) -> AST::Literals::Fraction {
+						[](LiteralExpr *l) -> Parsing::BinaryAst::Literals::Fraction {
 							if (l->literal->GetType() == typeid(Literals::Fraction)) {
 								auto *f = static_cast<Literals::Fraction *>(l->literal);
 								return *f;

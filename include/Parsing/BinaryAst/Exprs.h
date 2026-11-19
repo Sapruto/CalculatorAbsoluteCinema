@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace AST {
+namespace Parsing::BinaryAst {
 	enum class ExprKind { BINARY,
 						  UNARY,
 						  CALL,

@@ -1,4 +1,0 @@
-CompileFlags:
-  Add:
-    - -I/Users/dimabreus/Desktop/dev/CAC/include/
-    - -std=c++26

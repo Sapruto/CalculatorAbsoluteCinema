@@ -1,15 +1,15 @@
-#include "AST/AstPrinter.h"
+#include "Parsing/BinaryAst/AstPrinter.h"
 #include "Parsing/Errors.h"
-#include "Parsing/Lexer.h"
+#include "Parsing/Lexing/Lexer.h"
 #include "Parsing/Parser.h"
-#include "include/Parsing/Lexer.h"
+#include "Parsing/Lexing/Lexer.h"
 
 #include <iostream>
 #include <print>
 #include <string>
 
 void ProcessInput(const std::string &input) {
-	Parsing::Lexer lexer{input};
+	Parsing::Lexing::Lexer lexer{input};
 	auto tokens = lexer.Parse();
 
 	Parsing::Parser parser{input, tokens};

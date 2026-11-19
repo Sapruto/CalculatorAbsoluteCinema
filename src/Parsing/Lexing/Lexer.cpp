@@ -1,9 +1,10 @@
-#include "Parsing/Lexer.h"
+#include "Parsing/Lexing/Lexer.h"
 
-#include "Parsing/TokenType.h"
+#include "Parsing/Lexing/TokenType.h"
 
 using namespace Parsing;
-using namespace AST::Literals;
+using namespace Parsing::Lexing;
+using namespace Parsing::BinaryAst::Literals;
 
 Lexer::Lexer(const std::string &_code) : code(_code), errorsLogger(_code) {
 }

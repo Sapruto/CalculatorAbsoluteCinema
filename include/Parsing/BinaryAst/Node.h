@@ -1,6 +1,6 @@
 #pragma once
 
-namespace AST {
+namespace Parsing::BinaryAst {
 	struct Node {
 		virtual ~Node() = default;
 	};

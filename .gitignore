@@ -69,3 +69,6 @@ Testing/
 
 .vscode
 .idea/
+
+.clangd
+compile_commands.json

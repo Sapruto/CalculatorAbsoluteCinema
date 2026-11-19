@@ -9,7 +9,7 @@
 #include <typeindex>
 #include <typeinfo>
 
-namespace AST::Literals {
+namespace Parsing::BinaryAst::Literals {
 	struct LiteralValue {
 		virtual ~LiteralValue() = default;
 

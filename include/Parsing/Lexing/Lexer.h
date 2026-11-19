@@ -2,11 +2,11 @@
 
 #include <string>
 #include <vector>
-#include "Parsing/Token.h"
-#include "Parsing/Errors.h"
-#include "AST/Literals.h"
+#include "Token.h"
+#include "../Errors.h"
+#include "../BinaryAst/Literals.h"
 
-namespace Parsing {
+namespace Parsing::Lexing {
 	class Lexer {
 	private:
 		std::string code;
@@ -18,7 +18,7 @@ namespace Parsing {
 		static bool IsAlpha(char c);
 		void ParseNumber();
 		void AddToken(TokenType type);
-		void AddToken(TokenType type, AST::Literals::Fraction literal);
+		void AddToken(TokenType type, BinaryAst::Literals::Fraction literal);
 
 	public:
 		Lexer(const std::string &_code);

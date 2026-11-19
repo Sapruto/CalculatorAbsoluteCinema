@@ -20,7 +20,7 @@ ErrorsLogger::ErrorsLogger(const std::string &_source) : source(_source) {
 #include <unistd.h>
 #endif
 
-ParserException ErrorsLogger::Report(TokenLoc loc, const std::string &message) {
+ParserException ErrorsLogger::Report(Lexing::TokenLoc loc, const std::string &message) {
 	static const bool useColor = [] {
 		if (std::getenv("NO_COLOR"))
 			return false;
